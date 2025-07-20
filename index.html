@@ -1,5 +1,7 @@
+index.html:
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>贪吃蛇小游戏</title>
@@ -11,27 +13,21 @@
 <body>
 
     <h1>贪吃蛇小游戏</h1>
+    <div id="game"></div>
 
-    <!-- 游戏容器 -->
-    <div id="game-container">
-        <div id="game"></div>
-    </div>
-
-    <!-- 移动端虚拟方向键 -->
     <div id="controls">
-        <button class="btn" onclick="changeDirection('up')">⬆️</button>
-        <div style="display: flex; justify-content: space-between;">
+        <div class="buttons">
+            <div></div><button class="btn" onclick="changeDirection('up')">⬆️</button>
+            <div></div>
             <button class="btn" onclick="changeDirection('left')">⬅️</button>
             <button class="btn" onclick="changeDirection('down')">⬇️</button>
             <button class="btn" onclick="changeDirection('right')">➡️</button>
         </div>
     </div>
 
-    <!-- 暂停按钮 -->
-    <button id="pause-btn" class="pause-btn" onclick="togglePause()">⏸️ 暂停</button>
-
     <!-- 引入外部 JS -->
     <script src="script.js"></script>
 
 </body>
+
 </html>
