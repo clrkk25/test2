@@ -26,6 +26,7 @@ function draw() {
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
             cells[r][c].className = 'cell';
+            cells[r][c].innerHTML = '';
         }
     }
 
@@ -214,30 +215,5 @@ document.addEventListener('keydown', e => {
             break;
     }
 });
-
-// 移动端暂停按钮
-function createPauseButton() {
-    let controls = document.getElementById('controls');
-    if (!controls) {
-        controls = document.createElement('div');
-        controls.id = 'controls';
-        controls.style.marginTop = '24px';
-        controls.style.textAlign = 'center';
-        document.body.appendChild(controls);
-    }
-    let pauseBtn = document.getElementById('pause-btn');
-    if (!pauseBtn) {
-        pauseBtn = document.createElement('button');
-        pauseBtn.id = 'pause-btn';
-        pauseBtn.className = 'btn';
-        pauseBtn.innerText = '⏸️ 暂停';
-        pauseBtn.style.fontSize = '20px';
-        pauseBtn.style.width = '120px';
-        pauseBtn.style.height = '48px';
-        controls.appendChild(pauseBtn);
-        pauseBtn.addEventListener('click', togglePause);
-    }
-}
-createPauseButton();
 
 initGame();
