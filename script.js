@@ -5,6 +5,7 @@ const cells = [];
 
 let snake = [{ x: 10, y: 10 }];
 let direction = 'right';
+let pendingDirection = 'right'; // 新增变量
 let food = { x: 5, y: 5 };
 let interval;
 
@@ -37,6 +38,17 @@ function draw() {
 }
 
 function move() {
+    // 只在合法时应用pendingDirection
+    const opposites = {
+        up: 'down',
+        down: 'up',
+        left: 'right',
+        right: 'left'
+    };
+    if (pendingDirection !== opposites[direction]) {
+        direction = pendingDirection;
+    }
+
     const head = { ...snake[0] };
 
     switch (direction) {
@@ -80,15 +92,7 @@ function placeFood() {
 }
 
 function changeDirection(dir) {
-    const opposites = {
-        up: 'down',
-        down: 'up',
-        left: 'right',
-        right: 'left'
-    };
-    if (dir !== opposites[direction]) {
-        direction = dir;
-    }
+    pendingDirection = dir; // 只更新pendingDirection
 }
 
 function gameOver() {
@@ -100,6 +104,7 @@ function gameOver() {
 function initGame() {
     snake = [{ x: 10, y: 10 }];
     direction = 'right';
+    pendingDirection = 'right';
     placeFood();
     draw();
     clearInterval(interval);
