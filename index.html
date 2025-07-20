@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-  <meta charset="UTF-8">
-  <title>贪吃蛇小游戏</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>贪吃蛇小游戏</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入外部 CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>贪吃蛇小游戏</h1>
-<div id="game"></div>
+    <h1>贪吃蛇小游戏</h1>
+    <div id="game"></div>
 
-<div id="controls">
-  <div class="buttons">
-    <div></div><button class="btn" onclick="changeDirection('up')">⬆️</button><div></div>
-    <button class="btn" onclick="changeDirection('left')">⬅️</button>
-    <button class="btn" onclick="changeDirection('down')">⬇️</button>
-    <button class="btn" onclick="changeDirection('right')">➡️</button>
-  </div>
-</div>
+    <div id="controls">
+        <div class="buttons">
+            <div></div><button class="btn" onclick="changeDirection('up')">⬆️</button>
+            <div></div>
+            <button class="btn" onclick="changeDirection('left')">⬅️</button>
+            <button class="btn" onclick="changeDirection('down')">⬇️</button>
+            <button class="btn" onclick="changeDirection('right')">➡️</button>
+        </div>
+    </div>
 
-<script> src="script.js"</script>
+    <!-- 引入外部 JS -->
+    <script src="script.js"></script>
 
 </body>
+
 </html>
