@@ -1,14 +1,62 @@
 const rows = 20;
 const cols = 20;
 const game = document.getElementById('game');
+const historyBoard = document.getElementById('history-board');
+const realtimeBoard = document.getElementById('realtime-board');
 const cells = [];
 
+let username = '';
 let snake = [{ x: 10, y: 10 }];
 let direction = 'right';
 let pendingDirection = 'right';
 let food = { x: 5, y: 5 };
 let interval;
 let paused = false;
+
+// 玩家数据结构：{ username: { max: 历史最大, current: 当前 } }
+function getPlayersData() {
+    return JSON.parse(localStorage.getItem('snake_players') || '{}');
+}
+function setPlayersData(data) {
+    localStorage.setItem('snake_players', JSON.stringify(data));
+}
+
+// 用户名输入
+function askUsername() {
+    let name = localStorage.getItem('snake_username') || '';
+    while (!name) {
+        name = prompt('请输入你的用户名（仅用于排行榜显示）');
+        if (name) {
+            name = name.trim();
+        }
+    }
+    localStorage.setItem('snake_username', name);
+    return name;
+}
+
+// 更新排行榜
+function updateBoards() {
+    const data = getPlayersData();
+    // 历史排行榜
+    let historyArr = Object.entries(data)
+        .map(([user, obj]) => ({ user, max: obj.max || 0 }))
+        .sort((a, b) => b.max - a.max)
+        .slice(0, 10);
+    historyBoard.innerHTML = `<b>历史长度榜</b><hr style="margin:4px 0;">` +
+        historyArr.map((item, i) =>
+            `<div>${i + 1}. ${item.user}：${item.max}</div>`
+        ).join('') || '<div>暂无数据</div>';
+
+    // 实时最大长度
+    let realtimeArr = Object.entries(data)
+        .map(([user, obj]) => ({ user, current: obj.current || 0 }))
+        .sort((a, b) => b.current - a.current)
+        .slice(0, 10);
+    realtimeBoard.innerHTML = `<b>实时最大长度</b><hr style="margin:4px 0;">` +
+        realtimeArr.map((item, i) =>
+            `<div>${i + 1}. ${item.user}：${item.current}</div>`
+        ).join('') || '<div>暂无数据</div>';
+}
 
 // 创建格子
 for (let r = 0; r < rows; r++) {
@@ -54,6 +102,9 @@ function draw() {
             cell.classList.add('snake-tail');
         }
     }
+
+    // 每次绘制都刷新排行榜
+    updateBoards();
 }
 
 function move() {
@@ -95,11 +146,39 @@ function move() {
     // 吃到食物
     if (head.x === food.x && head.y === food.y) {
         placeFood();
+        // 吃到食物，更新实时长度和历史最大长度
+        updatePlayerLength(snake.length);
     } else {
         snake.pop();
+        updatePlayerLength(snake.length);
     }
 
     draw();
+}
+
+// 更新玩家长度
+function updatePlayerLength(len) {
+    const data = getPlayersData();
+    if (!data[username]) data[username] = { max: 0, current: 0 };
+    data[username].current = len;
+    if (len > data[username].max) {
+        data[username].max = len;
+    }
+    setPlayersData(data);
+}
+
+// 死亡时清空实时长度
+function gameOver() {
+    clearInterval(interval);
+    paused = false;
+    showPauseOverlay(false);
+    alert('游戏结束！点击确定重新开始');
+    // 清空实时长度
+    const data = getPlayersData();
+    if (data[username]) data[username].current = 0;
+    setPlayersData(data);
+    updateBoards();
+    initGame();
 }
 
 function placeFood() {
@@ -120,6 +199,11 @@ function gameOver() {
     paused = false;
     showPauseOverlay(false);
     alert('游戏结束！点击确定重新开始');
+    // 清空实时长度
+    const data = getPlayersData();
+    if (data[username]) data[username].current = 0;
+    setPlayersData(data);
+    updateBoards();
     initGame();
 }
 
@@ -133,6 +217,8 @@ function initGame() {
     draw();
     clearInterval(interval);
     interval = setInterval(move, 200);
+    // 初始化时也刷新实时长度
+    updatePlayerLength(snake.length);
 }
 
 // 暂停相关
@@ -216,4 +302,8 @@ document.addEventListener('keydown', e => {
     }
 });
 
-initGame();
+// 游戏启动
+window.onload = function () {
+    username = askUsername();
+    initGame();
+};

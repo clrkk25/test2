@@ -5,15 +5,16 @@
     <meta charset="UTF-8">
     <title>贪吃蛇小游戏</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入外部 CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
     <h1>贪吃蛇小游戏</h1>
-    <div id="game"></div>
-
+    <div class="game-container">
+        <div id="history-board" class="side-board"></div>
+        <div id="game"></div>
+        <div id="realtime-board" class="side-board"></div>
+    </div>
     <div id="controls">
         <button class="btn" id="pause-btn" onclick="togglePause()">⏸️</button>
         <div class="buttons">
@@ -24,10 +25,6 @@
             <button class="btn" onclick="changeDirection('right')">➡️</button>
         </div>
     </div>
-
-    <!-- 引入外部 JS -->
     <script src="script.js"></script>
-
 </body>
-
 </html>
