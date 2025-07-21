@@ -102,7 +102,7 @@ h1 {
         gap: 16px;
         justify-content: center;
         align-items: center;
-        margin: 8px auto 0 auto;       /* 上移，顶部间距缩小 */
+        margin: 0 auto 0 auto;       /* 上移，顶部间距缩小 */
     }
 
     #pause-btn {
