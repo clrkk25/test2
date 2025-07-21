@@ -1,33 +1,205 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-    <title>贪吃蛇小游戏</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入外部 CSS -->
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>扫雷小游戏</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #game {
+      display: inline-block;
+      margin: 20px auto;
+    }
+    .row {
+      display: flex;
+    }
+    .cell {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border: 1px solid #666;
+      background: #ccc;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+    }
+    .cell.revealed {
+      background: #eee;
+      cursor: default;
+    }
+    .cell.flagged {
+      background: #f9d0d0;
+      color: red;
+    }
+    .cell.mine {
+      background: #f00;
+      color: white;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body>
 
-    <h1>贪吃蛇小游戏</h1>
-    <div id="game"></div>
+<h1>扫雷小游戏</h1>
+<div id="game"></div>
+<button onclick="initGame()">重新开始</button>
 
-    <div id="controls">
-        <button class="btn" id="pause-btn" onclick="togglePause()">⏸️</button>
-        <div class="buttons">
-            <div></div><button class="btn" onclick="changeDirection('up')">⬆️</button>
-            <div></div>
-            <button class="btn" onclick="changeDirection('left')">⬅️</button>
-            <button class="btn" onclick="changeDirection('down')">⬇️</button>
-            <button class="btn" onclick="changeDirection('right')">➡️</button>
-        </div>
-    </div>
+<script>
+  const rows = 10;
+  const cols = 10;
+  const mineCount = 15;
 
-    <!-- 引入外部 JS -->
-    <script src="script.js"></script>
+  let board = [];
+  let mines = [];
+
+  function initGame() {
+    board = [];
+    mines = [];
+    const game = document.getElementById('game');
+    game.innerHTML = '';
+    game.style.width = cols * 32 + 'px';
+
+    // 初始化空白格子
+    for (let r = 0; r < rows; r++) {
+      const row = [];
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'row';
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.addEventListener('click', onCellClick);
+        cell.addEventListener('contextmenu', onCellRightClick);
+        rowDiv.appendChild(cell);
+        row.push({ element: cell, mine: false, adjacent: 0, revealed: false, flagged: false });
+      }
+      board.push(row);
+      game.appendChild(rowDiv);
+    }
+
+    // 随机布雷
+    while (mines.length < mineCount) {
+      const r = Math.floor(Math.random() * rows);
+      const c = Math.floor(Math.random() * cols);
+      if (!board[r][c].mine) {
+        board[r][c].mine = true;
+        mines.push([r, c]);
+      }
+    }
+
+    // 计算相邻雷数
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        board[r][c].adjacent = countAdjacentMines(r, c);
+      }
+    }
+  }
+
+  function countAdjacentMines(r, c) {
+    let count = 0;
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const nr = r + dr;
+        const nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+          if (board[nr][nc].mine) count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function onCellClick(e) {
+    const r = parseInt(e.target.dataset.row);
+    const c = parseInt(e.target.dataset.col);
+    revealCell(r, c);
+  }
+
+  function onCellRightClick(e) {
+    e.preventDefault();
+    const cell = e.target;
+    if (cell.classList.contains('revealed')) return;
+    cell.classList.toggle('flagged');
+    cell.textContent = cell.classList.contains('flagged') ? '🚩' : '';
+  }
+
+  function revealCell(r, c) {
+    const cell = board[r][c];
+    if (cell.revealed || cell.flagged) return;
+    cell.revealed = true;
+    cell.element.classList.add('revealed');
+    if (cell.mine) {
+      cell.element.classList.add('mine');
+      cell.element.textContent = '💣';
+      gameOver(false);
+      return;
+    }
+    if (cell.adjacent > 0) {
+      cell.element.textContent = cell.adjacent;
+    } else {
+      // 递归展开
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+            revealCell(nr, nc);
+          }
+        }
+      }
+    }
+    checkWin();
+  }
+
+  function gameOver(win) {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = board[r][c];
+        if (cell.mine && !cell.element.classList.contains('flagged')) {
+          cell.element.classList.add('mine');
+          cell.element.textContent = '💣';
+        }
+        cell.element.classList.add('revealed');
+      }
+    }
+    setTimeout(() => {
+      alert(win ? '恭喜，你赢了！' : '你踩雷了，游戏结束！');
+    }, 100);
+  }
+
+  function checkWin() {
+    let revealedCount = 0;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (board[r][c].revealed && !board[r][c].mine) {
+          revealedCount++;
+        }
+      }
+    }
+    if (revealedCount === rows * cols - mineCount) {
+      gameOver(true);
+    }
+  }
+
+  // 初始化游戏
+  initGame();
+</script>
 
 </body>
-
 </html>
