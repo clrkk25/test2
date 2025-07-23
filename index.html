@@ -9,9 +9,7 @@
 <body>
     <h1>贪吃蛇小游戏</h1>
     <div class="game-container">
-        <div id="history-board" class="side-board"></div>
         <div id="game"></div>
-        <div id="realtime-board" class="side-board"></div>
     </div>
     <div id="controls">
         <button class="btn" id="pause-btn" onclick="togglePause()">⏸️</button>
@@ -22,6 +20,10 @@
             <button class="btn" onclick="changeDirection('down')">⬇️</button>
             <button class="btn" onclick="changeDirection('right')">➡️</button>
         </div>
+    </div>
+    <div class="board-row">
+        <div id="history-board" class="side-board"></div>
+        <div id="realtime-board" class="side-board"></div>
     </div>
     <script src="script.js"></script>
 </body>
