@@ -41,11 +41,14 @@ h1 {
 .snake {
     background: linear-gradient(135deg, #34c759 60%, #30d158 100%);
     box-shadow: 0 2px 8px 0 rgba(52, 199, 89, 0.15);
+    position: relative;
+    z-index: 1;
 }
 
 .food {
-    background: linear-gradient(135deg, #ff375f 60%, #ff453a 100%);
-    box-shadow: 0 2px 8px 0 rgba(255, 69, 58, 0.15);
+    background: none !important;
+    position: relative;
+    z-index: 2;
 }
 
 #controls {
@@ -58,6 +61,7 @@ h1 {
     grid-template-columns: repeat(3, 64px);
     gap: 16px;
     justify-content: center;
+    align-items: center;
 }
 
 .btn {
@@ -78,60 +82,7 @@ h1 {
     box-shadow: 0 1px 4px 0 rgba(60, 60, 67, 0.08);
 }
 
-@media (max-width: 600px) {
-    #controls {
-        display: block;
-        margin-top: 0;
-        position: relative;
-        width: 100vw;
-        min-height: 120px;
-    }
-
-    #game {
-        transform: scale(0.6);
-        margin: 0 auto 0 auto;         /* 顶部和底部间距为0，左右居中 */
-        padding: 8px 0;                /* 上下8px，左右0 */
-        width: 100vw;                  /* 宽度占满屏幕 */
-        border-radius: 0 0 32px 32px;  /* 只保留下方圆角 */
-        box-sizing: border-box;
-    }
-
-    .buttons {
-        display: grid;
-        grid-template-columns: repeat(3, 64px);
-        gap: 16px;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto 0 auto;       /* 上移，顶部间距缩小 */
-    }
-
-    #pause-btn {
-        position: fixed;
-        top: 12px;
-        left: 12px;
-        z-index: 10001;
-        width: 48px !important;
-        height: 48px !important;
-        font-size: 22px !important;
-        padding: 0;
-        border-radius: 50%;
-        background: #fff;
-        box-shadow: 0 2px 8px 0 rgba(60, 60, 67, 0.10);
-        color: #222;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
 /* 苹果风格蛇体和食物 */
-.snake {
-    background: linear-gradient(135deg, #34c759 60%, #30d158 100%);
-    box-shadow: 0 2px 8px 0 rgba(52, 199, 89, 0.15);
-    position: relative;
-    z-index: 1;
-}
-
 .snake-head {
     background: linear-gradient(135deg, #30d158 80%, #34c759 100%);
     box-shadow: 0 4px 16px 0 rgba(52, 199, 89, 0.25);
@@ -160,12 +111,6 @@ h1 {
     filter: brightness(0.95);
 }
 
-.food {
-    background: none !important;
-    position: relative;
-    z-index: 2;
-}
-
 .food-apple {
     width: 18px;
     height: 18px;
@@ -183,7 +128,7 @@ h1 {
     width: 6px;
     height: 3px;
     background: rgba(255, 255, 255, 0.7);
-    border-radius: 3px 3px 3px 3px;
+    border-radius: 3px;
 }
 
 .food-leaf {
@@ -196,7 +141,8 @@ h1 {
     border-radius: 2px 2px 6px 6px;
     transform: rotate(-30deg);
 }
-/* ...existing code... */
+
+/* 排行榜容器 */
 .game-container {
     display: flex;
     justify-content: center;
@@ -207,12 +153,12 @@ h1 {
 }
 
 .side-board {
-    width: 120px;
+    width: 140px;
     min-height: 480px;
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 2px 8px 0 rgba(60,60,67,0.08);
-    padding: 16px 8px;
+    box-shadow: 0 2px 8px 0 rgba(60, 60, 67, 0.08);
+    padding: 16px 12px;
     font-size: 15px;
     color: #222;
     text-align: left;
@@ -222,26 +168,63 @@ h1 {
     max-height: 520px;
 }
 
-#history-board {
-    /* 历史排行榜在左 */
-}
-
-#realtime-board {
-    /* 实时长度在右 */
-}
-
+/* 移动端适配 */
 @media (max-width: 600px) {
     .game-container {
         flex-direction: column;
         align-items: center;
-        gap: 0;
-        width: 100vw;
+        gap: 16px;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
     }
+
     .side-board {
-        display: none;
+        width: 100%;
+        max-width: 300px;
+        margin-top: 0;
+        min-height: 200px;
+        font-size: 14px;
+        padding: 12px;
     }
+
     #game {
-        width: 100vw;
+        transform: scale(0.7);
+        transform-origin: center;
+        margin: 0 auto;
+        padding: 16px;
+        width: auto;
+        border-radius: 24px;
+        box-shadow: 0 6px 24px 0 rgba(60, 60, 67, 0.12);
+    }
+
+    #controls {
+        display: block;
+        margin-top: 8px;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    .buttons {
+        margin-top: 8px;
+    }
+
+    #pause-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 10001;
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 22px !important;
+        padding: 0;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 8px 0 rgba(60, 60, 67, 0.10);
+        color: #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
-/* ...existing code... */
